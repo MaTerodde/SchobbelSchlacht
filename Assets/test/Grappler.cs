@@ -1,10 +1,10 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace test
 {
     public class Grappler : MonoBehaviour
     {
-        public GameObject target;
         public float range;
         public float hookStrengthMultiplier;
         
@@ -12,39 +12,55 @@ namespace test
         private bool _hanging;
         private Rigidbody _rb;
         private Transform _transform;
+        private Camera _camera;
     
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
-        {
-            _targetPos = target.transform.position;
+        { 
+            _targetPos = new Vector3();
             _hanging = false;
             _rb = gameObject.GetComponent<Rigidbody>();
             _transform = gameObject.transform;
+            _camera = gameObject.GetComponent<Camera>();
             
-            ThrowHook();
             var t = _hanging ? "Hanging in there!" : "Falling :(";
             Debug.Log(t);
         }
 
         // Update is called once per frame
-        void Update()
+        void FixedUpdate()
         {
             if (_hanging)
             {
                 var targetVector = (_targetPos - _transform.position).normalized * hookStrengthMultiplier;
-                _rb.AddForce( targetVector, ForceMode.Force );    
+                _rb.AddForce(targetVector, ForceMode.Force);
+                if (Input.GetKey(KeyCode.Mouse1) || Vector3.Distance(_transform.position, _targetPos) > range)
+                {
+                    CutHook();
+                }
             }
-            
+            else if (Input.GetKey(KeyCode.Mouse0))
+            {
+                Debug.Log("Throwing hook");
+                if (Physics.Raycast(_transform.position, _camera.transform.forward, out var hit))
+                {
+                    ThrowHook(hit.transform);
+                }
+                else Debug.Log("Hook missed :(");
+            }
         }
 
-        private void ThrowHook()
+        private void ThrowHook(Transform targetTransform)
         {
-            var pos = _transform.position;
-            RaycastHit hitInfo;
-            if (Physics.Raycast(pos, target.transform.position, out hitInfo, range)) return;
-            {
-                _hanging = true;
-            }
+            Debug.Log("Hooked to " + targetTransform.position);
+            _targetPos = targetTransform.position;
+            _hanging = true;
+        }
+
+        private void CutHook()
+        {
+            Debug.Log("Cut hook");
+            _hanging = false;
         }
     }
 }
