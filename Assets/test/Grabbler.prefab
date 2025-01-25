@@ -107,9 +107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f91cbdf2e116b334aa58d985a9b985f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  range: 10
-  hookStrengthMultiplier: 5
+  range: 50
+  hookStrengthMultiplier: 20
 --- !u!54 &-165639145162992809
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -151,7 +150,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 50
   sensitivity: 10
-  maxYAngle: 80
+  maxYAngle: 89
+  walkingSpeed: 0
 --- !u!20 &-8664164223503748540
 Camera:
   m_ObjectHideFlags: 0
