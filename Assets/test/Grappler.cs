@@ -28,7 +28,7 @@ namespace test
         // Update is called once per frame
         void FixedUpdate()
         {
-            if (_hanging)
+            if (_hanging && Vector3.Distance(_transform.position, _targetPos) > range)
             {
                 var targetVector = (_targetPos - _transform.position).normalized * hookStrengthMultiplier;
                 _rb.AddForce(targetVector, ForceMode.Force);
