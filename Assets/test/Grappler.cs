@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace test
@@ -13,6 +13,7 @@ namespace test
         private Rigidbody _rb;
         private Transform _transform;
         private Camera _camera;
+        private LineScript _lineScript;
     
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -22,6 +23,7 @@ namespace test
             _rb = gameObject.GetComponent<Rigidbody>();
             _transform = gameObject.transform;
             _camera = gameObject.GetComponent<Camera>();
+            _lineScript = gameObject.GetComponent<LineScript>();
         }
 
         // Update is called once per frame
@@ -33,26 +35,28 @@ namespace test
                 _rb.AddForce(targetVector, ForceMode.Force);
                 if (Input.GetKey(KeyCode.Mouse1) || Vector3.Distance(_transform.position, _targetPos) > range)
                 {
-                    CutHook();
+                    CutHookRpc();
                 }
             }
             else if (Input.GetKey(KeyCode.Mouse0))
             {
                 if (Physics.Raycast(_transform.position, _camera.transform.forward, out var hit))
                 {
-                    ThrowHook(hit.transform);
+                    ThrowHookRpc(hit.transform);
                 }
             }
         }
 
-        private void ThrowHook(Transform targetTransform)
+        [Rpc] private void ThrowHookRpc(Transform targetTransform)
         {
             _targetPos = targetTransform.position;
+            _lineScript.AttachHook(targetTransform.position);
             _hanging = true;
         }
 
-        private void CutHook()
+        [Rpc] private void CutHookRpc()
         {
+            _lineScript.DetachHook();
             _hanging = false;
         }
     }
