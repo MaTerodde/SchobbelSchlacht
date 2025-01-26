@@ -41,25 +41,21 @@ namespace test
             }
             else if (Input.GetKey(KeyCode.Mouse0))
             {
-                Debug.Log("Throwing hook");
                 if (Physics.Raycast(_transform.position, _camera.transform.forward, out var hit))
                 {
                     ThrowHook(hit.transform);
                 }
-                else Debug.Log("Hook missed :(");
             }
         }
 
         private void ThrowHook(Transform targetTransform)
         {
-            Debug.Log("Hooked to " + targetTransform.position);
             _targetPos = targetTransform.position;
             _hanging = true;
         }
 
         private void CutHook()
         {
-            Debug.Log("Cut hook");
             _hanging = false;
         }
     }
