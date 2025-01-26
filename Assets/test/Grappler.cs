@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 
 namespace test
@@ -47,16 +46,17 @@ namespace test
             }
         }
 
-        [Rpc] private void ThrowHookRpc(Transform targetTransform)
+        private void ThrowHookRpc(Transform targetTransform)
         {
             _targetPos = targetTransform.position;
-            _lineScript.AttachHook(targetTransform.position);
+            Debug.Log(_targetPos);
+            gameObject.GetComponent<LineScript>().AttachHook(targetTransform.position);
             _hanging = true;
         }
 
-        [Rpc] private void CutHookRpc()
+        private void CutHookRpc()
         {
-            _lineScript.DetachHook();
+            gameObject.GetComponent<LineScript>().DetachHook();
             _hanging = false;
         }
     }
