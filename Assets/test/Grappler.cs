@@ -1,4 +1,3 @@
-using Unity.Netcode;
 using UnityEngine;
 
 namespace test
@@ -42,19 +41,19 @@ namespace test
             {
                 if (Physics.Raycast(_transform.position, _camera.transform.forward, out var hit))
                 {
-                    ThrowHookRpc(hit.transform);
+                    ThrowHookRpc(hit.point);
                 }
             }
         }
 
-        [Rpc] private void ThrowHookRpc(Transform targetTransform)
+        private void ThrowHookRpc(Vector3 hitPoint)
         {
-            _targetPos = targetTransform.position;
-            _lineScript.AttachHook(targetTransform.position);
+            _targetPos = hitPoint;
+            _lineScript.AttachHook(hitPoint);
             _hanging = true;
         }
 
-        [Rpc] private void CutHookRpc()
+        private void CutHookRpc()
         {
             _lineScript.DetachHook();
             _hanging = false;
