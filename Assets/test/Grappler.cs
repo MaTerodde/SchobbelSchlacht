@@ -55,7 +55,7 @@ namespace test
 
         private void CutHookRpc()
         {
-            gameObject.GetComponent<LineScript>().DetachHook();
+            _lineScript.DetachHook();
             _hanging = false;
         }
     }
