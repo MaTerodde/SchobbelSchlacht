@@ -41,16 +41,15 @@ namespace test
             {
                 if (Physics.Raycast(_transform.position, _camera.transform.forward, out var hit))
                 {
-                    ThrowHookRpc(hit.transform);
+                    ThrowHookRpc(hit.point);
                 }
             }
         }
 
-        private void ThrowHookRpc(Transform targetTransform)
+        private void ThrowHookRpc(Vector3 hitPoint)
         {
-            _targetPos = targetTransform.position;
-            Debug.Log(_targetPos);
-            gameObject.GetComponent<LineScript>().AttachHook(targetTransform.position);
+            _targetPos = hitPoint;
+            _lineScript.AttachHook(hitPoint);
             _hanging = true;
         }
 
