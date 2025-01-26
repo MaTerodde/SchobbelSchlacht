@@ -1,14 +1,17 @@
+using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace test
 {
     public class Grappler : MonoBehaviour
     {
-        public float range;
-        public float hookStrengthMultiplier;
+        public GrabblerSO grabblerSo;
         
+        private float _range;
+        private float _hookStrengthMultiplier;
         private Vector3 _targetPos;
-        private bool _hanging;
+        [SerializeField] private bool _hanging;
         private Rigidbody _rb;
         private Transform _transform;
         private Camera _camera;
@@ -16,7 +19,9 @@ namespace test
     
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
-        { 
+        {
+            _range = grabblerSo.range;
+            _hookStrengthMultiplier = grabblerSo.hookStrengthModifier;
             _targetPos = new Vector3();
             _hanging = false;
             _rb = gameObject.GetComponent<Rigidbody>();
@@ -28,11 +33,11 @@ namespace test
         // Update is called once per frame
         void FixedUpdate()
         {
-            if (_hanging && Vector3.Distance(_transform.position, _targetPos) > range)
+            if (_hanging)
             {
-                var targetVector = (_targetPos - _transform.position).normalized * hookStrengthMultiplier;
+                var targetVector = (_targetPos - _transform.position).normalized * _hookStrengthMultiplier;
                 _rb.AddForce(targetVector, ForceMode.Force);
-                if (Input.GetKey(KeyCode.Mouse1) || Vector3.Distance(_transform.position, _targetPos) > range)
+                if (Input.GetKey(KeyCode.Mouse1) || Vector3.Distance(_transform.position, _targetPos) > _range)
                 {
                     CutHookRpc();
                 }
@@ -41,7 +46,8 @@ namespace test
             {
                 if (Physics.Raycast(_transform.position, _camera.transform.forward, out var hit))
                 {
-                    ThrowHookRpc(hit.point);
+                    if(Vector3.Distance(_transform.position, hit.point) < _range)
+                        ThrowHookRpc(hit.point);
                 }
             }
         }
